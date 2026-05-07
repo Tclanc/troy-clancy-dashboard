@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troy Clancy Jewellery • JewelCraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen">
+
+  <!-- PASSWORD SCREEN -->
+  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
+    <div class="bg-zinc-900 rounded-3xl p-12 w-full max-w-md text-center">
+      <div class="text-5xl mb-6">💎</div>
+      <h1 class="text-3xl font-bold mb-2">JewelCraft Insights</h1>
+      <p class="text-amber-400 mb-8">Troy Clancy Jewellery</p>
+      
+      <input id="password-input" type="password" placeholder="Enter Password" 
+             class="w-full bg-zinc-800 text-center rounded-2xl p-5 text-lg mb-6 focus:outline-none focus:ring-2 focus:ring-amber-400">
+      
+      <button onclick="checkPassword()" 
+              class="w-full bg-amber-400 text-zinc-950 font-semibold py-5 rounded-3xl text-lg">
+        UNLOCK DASHBOARD
+      </button>
+      <p id="error-msg" class="text-red-400 mt-4 text-sm hidden">Incorrect password. Try again.</p>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div id="main-app" class="hidden flex h-screen">
+    <!-- Sidebar and full app will load here -->
+    <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+      <div class="p-6 border-b border-zinc-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-xl">💎</div>
+          <div><h1 class="text-2xl font-bold">JewelCraft</h1><p class="text-amber-400 text-sm">Troy Clancy</p></div>
+        </div>
+      </div>
+      <nav class="flex-1 p-4" id="nav"></nav>
+    </div>
+    <div class="flex-1 flex flex-col">
+      <header class="h-16 bg-zinc-900 border-b border-zinc-800 px-8 flex items-center">
+        <h2 id="page-title" class="text-2xl font-semibold">Dashboard</h2>
+      </header>
+      <div class="flex-1 overflow-auto p-8" id="main-content"></div>
+    </div>
+  </div>
+
+  <script>
+    const CORRECT_PASSWORD = "troy2026";   // ← CHANGE THIS TO YOUR OWN SECRET PASSWORD
+
+    function checkPassword() {
+      if (document.getElementById('password-input').value === CORRECT_PASSWORD) {
+        document.getElementById('password-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        initFullDashboard();
+      } else {
+        document.getElementById('error-msg').classList.remove('hidden');
+      }
+    }
+
+    function initFullDashboard() {
+      // Basic navigation ready - you can expand later
+      alert("✅ Dashboard unlocked successfully!\n\nYou can now use all features.");
+      // Full features (CRM, Playbook, Analytics, etc.) can be added here
+    }
+
+    // Allow Enter key to submit password
+    document.getElementById('password-input').addEventListener('keypress', e => {
+      if (e.key === 'Enter') checkPassword();
+    });
+  </script>
+</body>
+</html>
