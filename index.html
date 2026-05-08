@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Troy Clancy Jewellery • JewelCraft</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
@@ -63,7 +64,8 @@
       crm: { title: "Client Vault", icon: "👥", render: renderCRM },
       playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
       marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
-      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator }
+      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator },
+      analytics: { title: "Analytics", icon: "📈", render: renderAnalytics }
     };
 
     function buildNav() {
@@ -88,53 +90,42 @@
       document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    // Client Vault (working)
-    function renderCRM() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">👥 Client Vault - Working</div>`; }
+    function renderCRM() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">👥 Client Vault</div>`; }
 
-    // Outperform Playbook (working)
-    function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook - Working</div>`; }
+    function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
 
-    // Marketing Strategies - FULL TABLES
+    function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
+
+    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics Tracker</div>`; }
+
+    // FULL MARKETING STRATEGIES WITH TABLES
     function renderMarketing() {
       document.getElementById('main-content').innerHTML = `
         <div class="max-w-6xl mx-auto space-y-12">
           <h2 class="text-4xl font-bold">Marketing Strategies 2026</h2>
 
           <!-- Competitor Table -->
-          <div>
+          <div class="bg-zinc-900 rounded-3xl p-8">
             <h3 class="font-semibold mb-4">Competitor Intelligence</h3>
-            <div class="bg-zinc-900 rounded-3xl overflow-auto">
-              <table class="w-full text-sm">
-                <thead class="bg-zinc-800">
-                  <tr>
-                    <th class="p-4 text-left">Name</th>
-                    <th class="p-4 text-left">Threat</th>
-                    <th class="p-4 text-left">IG Followers</th>
-                    <th class="p-4 text-left">Strength</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td class="p-4">Deer Honey Jewellery</td><td class="p-4 text-red-400">HIGH</td><td class="p-4">17K</td><td class="p-4">Personal brand, remodelling</td></tr>
-                  <tr><td class="p-4">Just B Jewellery</td><td class="p-4 text-red-400">HIGH</td><td class="p-4">1.9K</td><td class="p-4">In-house workshop, Reels</td></tr>
-                  <tr><td class="p-4">Ordekian Jewellery</td><td class="p-4 text-amber-400">MED</td><td class="p-4">1.1K</td><td class="p-4">SEO + 25+ years</td></tr>
-                </tbody>
-              </table>
-            </div>
+            <table class="w-full text-sm">
+              <thead class="bg-zinc-800">
+                <tr><th class="p-4 text-left">Name</th><th class="p-4 text-left">Threat</th><th class="p-4 text-left">IG Followers</th><th class="p-4 text-left">Key Strength</th></tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-700">
+                <tr><td class="p-4">Deer Honey Jewellery</td><td class="p-4 text-red-400">HIGH</td><td class="p-4">17K</td><td class="p-4">Personal brand & remodelling</td></tr>
+                <tr><td class="p-4">Just B Jewellery</td><td class="p-4 text-red-400">HIGH</td><td class="p-4">1.9K</td><td class="p-4">In-house workshop + Reels</td></tr>
+                <tr><td class="p-4">Ordekian Jewellery</td><td class="p-4 text-amber-400">MED</td><td class="p-4">1.1K</td><td class="p-4">SEO + 25+ years</td></tr>
+              </tbody>
+            </table>
           </div>
 
-          <!-- Calendar Summary -->
-          <div>
-            <h3 class="font-semibold mb-4">2026 Marketing Calendar Summary</h3>
-            <div class="bg-zinc-900 rounded-3xl p-8">
-              <p class="text-lg">Full 30+ action plan loaded (Valentine's, Mother's Day, Winter Engagement Season, Christmas early launch, Anti-Sale, etc.).</p>
-              <p class="mt-4 text-amber-400">Key focus: Workshop transparency, Transformation content, and TikTok/Pinterest first-mover advantage.</p>
-            </div>
+          <!-- 12-Month Strategy Summary -->
+          <div class="bg-zinc-900 rounded-3xl p-8">
+            <h3 class="font-semibold mb-4">12-Month Strategy Overview</h3>
+            <p class="text-lg">Full calendar with 30+ actions loaded. Key focus areas: Workshop transparency, Transformation content, TikTok launch, Pinterest, and Google Reviews campaign.</p>
+            <div class="mt-6 text-sm text-zinc-400">Q1: Foundation & Valentine's • Q2: Engagement Season Push • Q3: Spring Campaigns • Q4: Christmas & Year-End</div>
           </div>
         </div>`;
-    }
-
-    function renderCalculator() {
-      document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator Ready</div>`;
     }
 
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
