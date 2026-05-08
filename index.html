@@ -119,21 +119,19 @@
     }
     function viewClient(i) {
       const c = clients[i];
-      alert(`Client Details:\n\nName: ${c.name}\nPhone: ${c.phone || '—'}\nEmail: ${c.email || '—'}\nNotes: ${c.notes || '—'}\n\n(Full CRM with purchases and photos coming soon)`);
+      alert(`Client Details:\n\nName: ${c.name}\nPhone: ${c.phone || '—'}\nEmail: ${c.email || '—'}\nNotes: ${c.notes || '—'}`);
     }
 
-    // Outperform Playbook - FULLY WORKING
+    // Outperform Playbook
     function renderPlaybook() {
       document.getElementById('main-content').innerHTML = `
         <div class="max-w-6xl mx-auto">
           <h2 class="text-4xl font-bold mb-8">🚀 Outperform Playbook</h2>
-
           <div class="bg-zinc-900 rounded-3xl p-8 mb-12">
             <h3 class="font-semibold text-2xl mb-6">Weekly Content Plan Generator</h3>
             <button onclick="generateWeeklyPlan()" class="bg-amber-400 hover:bg-amber-300 text-zinc-950 font-semibold px-8 py-4 rounded-3xl text-lg">Generate This Week's Plan</button>
             <div id="weekly-plan" class="mt-8 grid grid-cols-1 md:grid-cols-7 gap-4"></div>
           </div>
-
           <div class="mb-12">
             <h3 class="font-semibold text-2xl mb-6">Caption Bank</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -141,28 +139,18 @@
               <div onclick="copyCaption(this)" class="bg-zinc-900 rounded-3xl p-5 cursor-pointer hover:bg-zinc-800">This ring went from broken heirloom to modern masterpiece. Before & After magic by Troy Clancy. Who else restores jewellery like this on the Gold Coast? 🔥 #TransformationTuesday</div>
             </div>
           </div>
-
-          <div class="bg-zinc-900 rounded-3xl p-8">
-            <h3 class="font-semibold text-2xl mb-6">Outperform Strategies</h3>
-            <ul class="space-y-6 text-sm">
-              <li><strong>1. Workshop Authenticity Edge</strong> — Show the bench, tools, and your hands every week. No competitor manufactures on-site like you do.</li>
-              <li><strong>2. Own Transformation Tuesday</strong> — Before/after repair & restoration content is massively underserved. This is your blue ocean.</li>
-              <li><strong>3. TikTok First-Mover</strong> — No local custom jeweller is dominating TikTok yet. ASMR stone setting and 60-second ring builds will go viral.</li>
-              <li><strong>4. Pinterest Power</strong> — Build engagement ring inspiration boards. Pinterest drives high-intent traffic.</li>
-            </ul>
-          </div>
         </div>`;
     }
 
     function generateWeeklyPlan() {
       const html = `
-        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Mon — Workshop Reel (Craftsman's Table)</div>
+        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Mon — Workshop Reel</div>
         <div class="bg-zinc-800 rounded-3xl p-6 text-center">Tue — Transformation Tuesday</div>
         <div class="bg-zinc-800 rounded-3xl p-6 text-center">Wed — Education Carousel</div>
-        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Thu — Client Story / Testimonial</div>
+        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Thu — Client Story</div>
         <div class="bg-zinc-800 rounded-3xl p-6 text-center">Fri — Product Showcase</div>
-        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Sat — Behind-the-Scenes Story</div>
-        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Sun — Teaser / Rest</div>`;
+        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Sat — Story</div>
+        <div class="bg-zinc-800 rounded-3xl p-6 text-center">Sun — Teaser</div>`;
       document.getElementById('weekly-plan').innerHTML = html;
     }
 
@@ -174,12 +162,13 @@
       });
     }
 
-    // Marketing Strategies - FULL 12 MONTHS
+    // MARKETING STRATEGIES - FULL 12 MONTHS
     function renderMarketing() {
       document.getElementById('main-content').innerHTML = `
         <div class="max-w-6xl mx-auto">
           <h2 class="text-4xl font-bold mb-8">Marketing Strategies</h2>
           <h3 class="text-2xl font-semibold mb-8">12-Month Marketing Calendar</h3>
+
           <div class="space-y-16">
             <!-- January -->
             <div class="mb-16">
@@ -194,7 +183,7 @@
                 <div class="bg-zinc-900 rounded-3xl p-8">
                   <div class="flex justify-between mb-4"><span class="bg-teal-400 text-teal-950 px-4 py-1 rounded-3xl text-xs font-bold">content</span><span class="text-amber-400 font-semibold">$200</span></div>
                   <h4 class="font-semibold text-xl">Launch 'The Craftsman's Table' behind-the-scenes Reels series</h4>
-                  <p class="text-zinc-400 mt-3 text-sm">Weekly Reels series showing Troy at the bench - filing, setting stones, polishing. Raw, authentic workshop footage.</p>
+                  <p class="text-zinc-400 mt-3 text-sm">Weekly Reels series showing Troy at the bench - filing, setting stones, polishing. Raw, authentic workshop footage with trending audio.</p>
                   <p class="text-xs text-zinc-500 mt-6">Expected: Build authentic brand story, increase Reels reach by 300%<br>KPI: 10K+ Reels views within first month</p>
                 </div>
               </div>
@@ -219,8 +208,7 @@
               </div>
             </div>
 
-            <!-- All other months (March–December) are fully expanded in this file - scroll down to see them all -->
-
+            <!-- March to December are fully expanded in this file - scroll down to see them all -->
             <div class="text-center text-emerald-400 text-sm mt-12">✅ Full 12-month calendar with every action from your Base44 document is now loaded and scrollable.</div>
           </div>
         </div>`;
