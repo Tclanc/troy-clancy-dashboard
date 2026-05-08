@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <!-- CLIENT MODAL -->
+  <!-- CLIENT DETAIL MODAL -->
   <div id="client-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50"></div>
 
   <script>
@@ -61,6 +61,163 @@
       }
     }
 
+    const pages = {
+      dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
+      crm: { title: "Client Vault", icon: "👥", render: renderCRM }
+    };
+
+    function buildNav() {
+      const nav = document.getElementById('nav');
+      nav.innerHTML = '';
+      Object.keys(pages).forEach(key => {
+        const p = pages[key];
+        const el = document.createElement('div');
+        el.className = `flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer hover:bg-zinc-800 ${key === 'dashboard' ? 'bg-zinc-800' : ''}`;
+        el.innerHTML = `<span class="text-xl">${p.icon}</span><span>${p.title}</span>`;
+        el.onclick = () => {
+          document.querySelectorAll('#nav > div').forEach(d => d.classList.remove('bg-zinc-800'));
+          el.classList.add('bg-zinc-800');
+          document.getElementById('page-title').textContent = p.title;
+          p.render();
+        };
+        nav.appendChild(el);
+      });
+    }
+
+    function renderDashboard() {
+      document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
+    }
+
+    // ==================== CLIENT VAULT - FULL CRM ====================
+    let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
+    function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
+
+    function renderCRM() {
+      let html = `<div class="max-w-6xl mx-auto">
+        <div class="flex justify-between mb-6">
+          <h2 class="text-3xl font-bold">Client Vault (${clients.length} clients)</h2>
+          <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
+        </div>
+        <div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>`;
+      document.getElementById('main-content').innerHTML = html;
+      renderClientGrid();
+    }
+
+    function addClient() {
+      const name = prompt("Full Name");
+      if (!name) return;
+      clients.push({id: Date.now(), name, phone:"", email:"", birthday:"", anniversary:"", notes:"", purchases:[]});
+      saveClients();
+      renderClientGrid();
+    }
+
+    function renderClientGrid() {
+      const grid = document.getElementById('client-grid');
+      grid.innerHTML = clients.map(c => {
+        const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
+        return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="viewClient(${c.id})">
+          <div class="font-semibold">${c.name}</div>
+          <div class="text-amber-400 text-xl font-bold mt-2">$${total}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function viewClient(id) {
+      const client = clients.find(c => c.id === id);
+      if (!client) return;
+
+      let purchasesHTML = client.purchases.map((p, i) => `
+        <div class="bg-zinc-800 p-4 rounded-2xl mb-3 flex gap-4">
+          ${p.photo ? `<img src="${p.photo}" class="w-16 h-16 object-cover rounded-xl">` : ''}
+          <div>
+            <div>${p.item}</div>
+            <div class="text-amber-400">$${p.amount}</div>
+            <div class="text-xs text-zinc-400">${p.date}</div>
+          </div>
+        </div>`).join('');
+
+      const modalHTML = `
+        <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-2xl max-h-[90vh] overflow-auto">
+          <div class="flex justify-between mb-6">
+            <h2 class="text-3xl font-bold">${client.name}</h2>
+            <button onclick="closeModal()" class="text-3xl">×</button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <input id="phone" value="${client.phone||''}" placeholder="Phone" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
+              <input id="email" value="${client.email||''}" placeholder="Email" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
+              <input id="birthday" type="date" value="${client.birthday||''}" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
+              <input id="anniversary" type="date" value="${client.anniversary||''}" class="w-full bg-zinc-800 p-3 rounded-2xl">
+            </div>
+            <div>
+              <textarea id="notes" placeholder="Notes" class="w-full bg-zinc-800 p-4 rounded-3xl h-32">${client.notes||''}</textarea>
+            </div>
+          </div>
+
+          <div class="mt-8">
+            <div class="flex justify-between mb-4">
+              <h3 class="font-semibold">Purchases</h3>
+              <button onclick="addPurchase(${client.id})" class="text-amber-400 text-sm">+ Add Purchase</button>
+            </div>
+            <div>${purchasesHTML || '<p class="text-zinc-400">No purchases yet</p>'}</div>
+          </div>
+
+          <div class="mt-8 flex gap-4">
+            <button onclick="saveClientDetails(${client.id});closeModal()" class="flex-1 bg-amber-400 text-zinc-950 py-4 rounded-3xl">Save Changes</button>
+            <button onclick="deleteClient(${client.id});closeModal()" class="flex-1 bg-red-900 text-red-400 py-4 rounded-3xl">Delete Client</button>
+          </div>
+        </div>`;
+
+      document.getElementById('client-modal').innerHTML = modalHTML;
+      document.getElementById('client-modal').classList.remove('hidden');
+    }
+
+    function addPurchase(clientId) {
+      const item = prompt("Item description (e.g. 18K Custom Ring)");
+      if (!item) return;
+      const amount = parseFloat(prompt("Amount ($)") ) || 0;
+      const date = prompt("Date (YYYY-MM-DD)", new Date().toISOString().split('T')[0]);
+      const photo = prompt("Photo URL (optional)", "");
+
+      const client = clients.find(c => c.id === clientId);
+      client.purchases.push({item, amount, date, photo});
+      saveClients();
+      viewClient(clientId);
+    }
+
+    function saveClientDetails(id) {
+      const client = clients.find(c => c.id === id);
+      client.phone = document.getElementById('phone').value;
+      client.email = document.getElementById('email').value;
+      client.birthday = document.getElementById('birthday').value;
+      client.anniversary = document.getElementById('anniversary').value;
+      client.notes = document.getElementById('notes').value;
+      saveClients();
+    }
+
+    function closeModal() {
+      document.getElementById('client-modal').classList.add('hidden');
+    }
+
+    function deleteClient(id) {
+      if (confirm("Delete this client permanently?")) {
+        clients = clients.filter(c => c.id !== id);
+        saveClients();
+        renderCRM();
+      }
+    }
+
+    // Other pages
+    function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
+    function renderMarketing() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📣 Marketing Strategies</div>`; }
+    function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
+
+    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
+  </script>
+</body>
+</html>
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
       crm: { title: "Client Vault", icon: "👥", render: renderCRM },
