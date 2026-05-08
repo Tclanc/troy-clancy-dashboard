@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Troy Clancy Jewellery • JewelCraft</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
@@ -45,6 +44,9 @@
     </div>
   </div>
 
+  <!-- CLIENT DETAIL MODAL -->
+  <div id="client-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50"></div>
+
   <script>
     const CORRECT_PASSWORD = "c99#1@axWTE!NH^B";
 
@@ -62,11 +64,9 @@
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
       crm: { title: "Client Vault", icon: "👥", render: renderCRM },
-      playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
-      marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
-      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator },
-      analytics: { title: "Analytics", icon: "📈", render: renderAnalytics },
-      logger: { title: "Content Logger", icon: "📝", render: renderContentLogger }
+      playbook: { title: "Outperform Playbook", icon: "🚀", render: () => {} },
+      marketing: { title: "Marketing Strategies", icon: "📣", render: () => {} },
+      calculator: { title: "Cost Calculator", icon: "🧮", render: () => {} }
     };
 
     function buildNav() {
@@ -91,12 +91,18 @@
       document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    // 1. CLIENT VAULT - Expanded
+    // ==================== CLIENT VAULT - FULL CRM ====================
     let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
     function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
 
     function renderCRM() {
-      let html = `<div class="max-w-6xl mx-auto"><div class="flex justify-between mb-6"><h2 class="text-3xl font-bold">Client Vault</h2><button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button></div><div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>`;
+      let html = `<div class="max-w-6xl mx-auto">
+        <div class="flex justify-between mb-6">
+          <h2 class="text-3xl font-bold">Client Vault (${clients.length} clients)</h2>
+          <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
+        </div>
+        <div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>`;
       document.getElementById('main-content').innerHTML = html;
       renderClientGrid();
     }
@@ -104,7 +110,7 @@
     function addClient() {
       const name = prompt("Full Name");
       if (!name) return;
-      clients.push({id: Date.now(), name, phone:"", email:"", purchases:[]});
+      clients.push({id: Date.now(), name, phone:"", email:"", birthday:"", anniversary:"", notes:"", purchases:[]});
       saveClients();
       renderClientGrid();
     }
@@ -113,66 +119,73 @@
       const grid = document.getElementById('client-grid');
       grid.innerHTML = clients.map(c => {
         const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
-        return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="alert('Client: ${c.name}\\nTotal Spend: $${total}\\nAdd more details in next update')"><div class="font-semibold">${c.name}</div><div class="text-amber-400 text-xl">$${total}</div></div>`;
+        return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="viewClient(${c.id})">
+          <div class="font-semibold text-lg">${c.name}</div>
+          <div class="text-amber-400 text-2xl font-bold mt-4">$${total}</div>
+        </div>`;
       }).join('');
     }
 
-    // 2. COST CALCULATOR
-    function renderCalculator() {
-      document.getElementById('main-content').innerHTML = `
-        <div class="max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
-          <h2 class="text-3xl font-bold mb-8">Cost Calculator (300% Margin + 10% GST)</h2>
-          <div class="space-y-6">
-            <select id="metal" class="w-full bg-zinc-800 p-4 rounded-2xl"><option>18K Yellow Gold</option><option>18K Rose Gold</option><option>Platinum 950</option></select>
-            <input id="weight" type="number" value="15" placeholder="Finished weight (grams)" class="w-full bg-zinc-800 p-4 rounded-2xl">
-            <input id="hours" type="number" value="20" placeholder="Labour hours" class="w-full bg-zinc-800 p-4 rounded-2xl">
-            <input id="gems" type="number" value="2500" placeholder="Gem cost $" class="w-full bg-zinc-800 p-4 rounded-2xl">
-            <button onclick="calculatePrice()" class="w-full bg-amber-400 text-zinc-950 py-6 rounded-3xl text-xl font-bold">CALCULATE RETAIL PRICE</button>
-            <div id="calc-result" class="mt-8"></div>
+    function viewClient(id) {
+      const client = clients.find(c => c.id === id);
+      if (!client) return;
+
+      let purchasesHTML = client.purchases.map((p, i) => `
+        <div class="bg-zinc-800 p-4 rounded-2xl mb-3">
+          <div>${p.item} - $${p.amount}</div>
+          <div class="text-xs text-zinc-400">${p.date}</div>
+        </div>`).join('');
+
+      const modalHTML = `
+        <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-2xl max-h-[90vh] overflow-auto">
+          <div class="flex justify-between mb-6">
+            <h2 class="text-3xl font-bold">${client.name}</h2>
+            <button onclick="closeModal()" class="text-3xl">×</button>
+          </div>
+          <div class="grid grid-cols-2 gap-8">
+            <div>
+              <p><strong>Phone:</strong> ${client.phone || '—'}</p>
+              <p><strong>Email:</strong> ${client.email || '—'}</p>
+              <p><strong>Birthday:</strong> ${client.birthday || '—'}</p>
+              <p><strong>Anniversary:</strong> ${client.anniversary || '—'}</p>
+            </div>
+            <div>
+              <p><strong>Lifetime Spend:</strong> <span class="text-amber-400">$${client.purchases.reduce((sum, p) => sum + (p.amount||0), 0)}</span></p>
+            </div>
+          </div>
+          <div class="mt-8">
+            <h3 class="font-semibold mb-4">Purchase History</h3>
+            ${purchasesHTML || '<p class="text-zinc-400">No purchases yet</p>'}
+          </div>
+          <div class="mt-8 flex gap-4">
+            <button onclick="deleteClient(${client.id});closeModal()" class="flex-1 bg-red-900 text-red-400 py-4 rounded-3xl">Delete Client</button>
+            <button onclick="closeModal()" class="flex-1 bg-zinc-800 py-4 rounded-3xl">Close</button>
           </div>
         </div>`;
+
+      const modal = document.getElementById('client-modal');
+      modal.innerHTML = modalHTML;
+      modal.classList.remove('hidden');
     }
 
-    window.calculatePrice = function() {
-      const weight = parseFloat(document.getElementById('weight').value) || 0;
-      const hours = parseFloat(document.getElementById('hours').value) || 0;
-      const gems = parseFloat(document.getElementById('gems').value) || 0;
-      const labour = hours * 350;
-      const totalCost = (weight * 130) + labour + gems + 300;
-      const retail = Math.round(totalCost * 4);
-      const withGST = Math.round(retail * 1.1);
-      document.getElementById('calc-result').innerHTML = `<div class="bg-zinc-800 rounded-3xl p-8"><div class="text-2xl">Retail ex GST: <span class="text-amber-400">$${retail}</span></div><div class="text-xl mt-2">Incl. 10% GST: $${withGST}</div></div>`;
-    };
-
-    // 3. OUTPERFORM PLAYBOOK
-    function renderPlaybook() {
-      document.getElementById('main-content').innerHTML = `
-        <div class="max-w-5xl mx-auto space-y-10">
-          <h2 class="text-3xl font-bold">Outperform Playbook</h2>
-          <button onclick="alert('Weekly plan generated!\\n\\nMonday: Workshop Reel\\nTuesday: Transformation\\nWednesday: Education\\nThursday: Client Story\\nFriday: Lifestyle')" class="bg-amber-400 text-zinc-950 px-8 py-4 rounded-3xl">Generate This Week's Plan</button>
-        </div>`;
+    function closeModal() {
+      document.getElementById('client-modal').classList.add('hidden');
     }
 
-    // 4. ANALYTICS + LOGGER
-    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics Tracker Ready</div>`; }
-    function renderContentLogger() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📝 Content Logger Ready</div>`; }
-
-    function renderMarketing() {
-      document.getElementById('main-content').innerHTML = `
-        <div class="max-w-5xl mx-auto">
-          <h2 class="text-3xl font-bold mb-8">2026 Marketing Strategies</h2>
-          <div class="bg-zinc-900 rounded-3xl p-8">
-            <h3 class="font-semibold mb-4">Core Strategies</h3>
-            <ul class="space-y-3 text-lg">
-              <li>Daily Workshop Reels</li>
-              <li>Transformation Tuesday</li>
-              <li>Education Carousels</li>
-              <li>Pinterest Boards</li>
-              <li>TikTok Launch</li>
-            </ul>
-          </div>
-        </div>`;
+    function deleteClient(id) {
+      if (confirm("Delete this client permanently?")) {
+        clients = clients.filter(c => c.id !== id);
+        saveClients();
+        renderCRM();
+      }
     }
+
+    // Other pages (short for now)
+    function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
+    function renderMarketing() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📣 Marketing Strategies</div>`; }
+    function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
+    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics</div>`; }
+    function renderContentLogger() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📝 Content Logger</div>`; }
 
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
   </script>
