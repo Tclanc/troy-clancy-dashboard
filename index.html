@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <!-- CLIENT DETAIL MODAL -->
+  <!-- CLIENT MODAL -->
   <div id="client-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50"></div>
 
   <script>
@@ -64,9 +64,9 @@
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
       crm: { title: "Client Vault", icon: "👥", render: renderCRM },
-      playbook: { title: "Outperform Playbook", icon: "🚀", render: () => {} },
-      marketing: { title: "Marketing Strategies", icon: "📣", render: () => {} },
-      calculator: { title: "Cost Calculator", icon: "🧮", render: () => {} }
+      playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
+      marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
+      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator }
     };
 
     function buildNav() {
@@ -91,14 +91,14 @@
       document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    // ==================== CLIENT VAULT - FULL CRM ====================
+    // CLIENT VAULT - FULL CRM
     let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
     function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
 
     function renderCRM() {
       let html = `<div class="max-w-6xl mx-auto">
         <div class="flex justify-between mb-6">
-          <h2 class="text-3xl font-bold">Client Vault (${clients.length} clients)</h2>
+          <h2 class="text-3xl font-bold">Client Vault (${clients.length})</h2>
           <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
         </div>
         <div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -120,8 +120,8 @@
       grid.innerHTML = clients.map(c => {
         const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
         return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="viewClient(${c.id})">
-          <div class="font-semibold text-lg">${c.name}</div>
-          <div class="text-amber-400 text-2xl font-bold mt-4">$${total}</div>
+          <div class="font-semibold">${c.name}</div>
+          <div class="text-amber-400 text-xl font-bold mt-2">$${total}</div>
         </div>`;
       }).join('');
     }
@@ -130,11 +130,11 @@
       const client = clients.find(c => c.id === id);
       if (!client) return;
 
-      let purchasesHTML = client.purchases.map((p, i) => `
+      let purchasesHTML = client.purchases.map(p => `
         <div class="bg-zinc-800 p-4 rounded-2xl mb-3">
-          <div>${p.item} - $${p.amount}</div>
+          <div>${p.item} — $${p.amount}</div>
           <div class="text-xs text-zinc-400">${p.date}</div>
-        </div>`).join('');
+        </div>`).join('') || '<p class="text-zinc-400">No purchases yet</p>';
 
       const modalHTML = `
         <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-2xl max-h-[90vh] overflow-auto">
@@ -142,7 +142,7 @@
             <h2 class="text-3xl font-bold">${client.name}</h2>
             <button onclick="closeModal()" class="text-3xl">×</button>
           </div>
-          <div class="grid grid-cols-2 gap-8">
+          <div class="grid grid-cols-2 gap-8 text-sm">
             <div>
               <p><strong>Phone:</strong> ${client.phone || '—'}</p>
               <p><strong>Email:</strong> ${client.email || '—'}</p>
@@ -150,12 +150,12 @@
               <p><strong>Anniversary:</strong> ${client.anniversary || '—'}</p>
             </div>
             <div>
-              <p><strong>Lifetime Spend:</strong> <span class="text-amber-400">$${client.purchases.reduce((sum, p) => sum + (p.amount||0), 0)}</span></p>
+              <p><strong>Lifetime Value:</strong> <span class="text-amber-400">$${client.purchases.reduce((sum, p) => sum + (p.amount||0), 0)}</span></p>
             </div>
           </div>
           <div class="mt-8">
-            <h3 class="font-semibold mb-4">Purchase History</h3>
-            ${purchasesHTML || '<p class="text-zinc-400">No purchases yet</p>'}
+            <h3 class="font-semibold mb-3">Purchase History</h3>
+            ${purchasesHTML}
           </div>
           <div class="mt-8 flex gap-4">
             <button onclick="deleteClient(${client.id});closeModal()" class="flex-1 bg-red-900 text-red-400 py-4 rounded-3xl">Delete Client</button>
@@ -163,9 +163,8 @@
           </div>
         </div>`;
 
-      const modal = document.getElementById('client-modal');
-      modal.innerHTML = modalHTML;
-      modal.classList.remove('hidden');
+      document.getElementById('client-modal').innerHTML = modalHTML;
+      document.getElementById('client-modal').classList.remove('hidden');
     }
 
     function closeModal() {
@@ -180,7 +179,7 @@
       }
     }
 
-    // Other pages (short for now)
+    // Other sections
     function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
     function renderMarketing() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📣 Marketing Strategies</div>`; }
     function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
