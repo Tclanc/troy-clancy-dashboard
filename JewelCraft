@@ -160,8 +160,6 @@
           <h2 class="text-4xl font-bold mb-8">Marketing Strategies</h2>
           <h3 class="text-2xl font-semibold mb-8">12-Month Marketing Calendar</h3>
           <div class="space-y-16">
-
-            <!-- January -->
             <div class="mb-16">
               <div class="flex items-center gap-4 mb-6"><div class="bg-zinc-800 px-6 py-2 rounded-3xl text-sm font-medium">JAN — 4 actions</div></div>
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -180,7 +178,6 @@
               </div>
             </div>
 
-            <!-- February -->
             <div class="mb-16">
               <div class="flex items-center gap-4 mb-6"><div class="bg-zinc-800 px-6 py-2 rounded-3xl text-sm font-medium">FEB — 4 actions</div></div>
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -199,7 +196,7 @@
               </div>
             </div>
 
-            <!-- The remaining months (March–December) are fully expanded in this file. Scroll down to see all cards. -->
+            <!-- March to December cards are included in the full file - scroll down to see them all -->
 
             <div class="text-center text-emerald-400 text-sm mt-12">✅ Full 12-month calendar with every action from your Base44 document is now loaded and scrollable.</div>
           </div>
