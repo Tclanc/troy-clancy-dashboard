@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Troy Clancy Jewellery • JewelCraft</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
@@ -67,8 +68,7 @@
       playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
       marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
       calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator },
-      analytics: { title: "Analytics", icon: "📈", render: () => alert("Analytics - Coming soon") },
-      logger: { title: "Content Logger", icon: "📝", render: () => alert("Content Logger - Coming soon") }
+      analytics: { title: "Analytics", icon: "📈", render: renderAnalytics }
     };
 
     function buildNav() {
@@ -93,14 +93,14 @@
       document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    // ==================== FULL CLIENT VAULT ====================
+    // ==================== 1. CLIENT VAULT - FULL CRM ====================
     let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
     function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
 
     function renderCRM() {
       let html = `<div class="max-w-6xl mx-auto">
         <div class="flex justify-between mb-6">
-          <h2 class="text-3xl font-bold">Client Vault (${clients.length})</h2>
+          <input id="client-search" placeholder="Search clients..." class="bg-zinc-800 p-4 rounded-3xl w-96" onkeyup="filterClients(this.value)">
           <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
         </div>
         <div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -117,9 +117,9 @@
       renderClientGrid();
     }
 
-    function renderClientGrid() {
+    function renderClientGrid(filteredClients = clients) {
       const grid = document.getElementById('client-grid');
-      grid.innerHTML = clients.map(c => {
+      grid.innerHTML = filteredClients.map(c => {
         const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
         return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="viewClient(${c.id})">
           <div class="font-semibold">${c.name}</div>
@@ -128,14 +128,19 @@
       }).join('');
     }
 
+    window.filterClients = function(query) {
+      const filtered = clients.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
+      renderClientGrid(filtered);
+    };
+
     function viewClient(id) {
       const client = clients.find(c => c.id === id);
       if (!client) return;
 
-      let purchasesHTML = client.purchases.map((p, i) => `
+      let purchasesHTML = client.purchases.map(p => `
         <div class="bg-zinc-800 p-4 rounded-2xl mb-3 flex gap-4">
           ${p.photo ? `<img src="${p.photo}" class="w-20 h-20 object-cover rounded-xl">` : ''}
-          <div class="flex-1">
+          <div>
             <div>${p.item}</div>
             <div class="text-amber-400">$${p.amount}</div>
             <div class="text-xs text-zinc-400">${p.date}</div>
@@ -179,7 +184,7 @@
     }
 
     function addPurchase(clientId) {
-      const item = prompt("Item (e.g. 18K Engagement Ring)");
+      const item = prompt("Item description");
       if (!item) return;
       const amount = parseFloat(prompt("Amount ($)")) || 0;
       const date = prompt("Date (YYYY-MM-DD)", new Date().toISOString().split('T')[0]);
@@ -213,7 +218,7 @@
       }
     }
 
-    // Other sections
+    // Other sections (short for now)
     function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
     function renderMarketing() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📣 Marketing Strategies</div>`; }
     function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
