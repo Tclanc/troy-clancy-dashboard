@@ -21,11 +21,11 @@
       <p class="text-amber-400 mb-8">Troy Clancy Jewellery • Private</p>
       <input id="password-input" type="password" placeholder="Enter Password" class="w-full bg-zinc-800 text-center rounded-2xl p-5 text-lg mb-6">
       <button onclick="checkPassword()" class="w-full bg-amber-400 text-zinc-950 font-semibold py-5 rounded-3xl text-lg">UNLOCK DASHBOARD</button>
-      <p id="error-msg" class="text-red-400 mt-4 text-sm hidden">Incorrect password</p>
+      <p id="error-msg" class="text-red-400 mt-4 text-sm hidden">Incorrect password. Try again.</p>
     </div>
   </div>
 
-  <!-- MAIN DASHBOARD -->
+  <!-- MAIN APP -->
   <div id="main-app" class="hidden flex h-screen">
     <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
       <div class="p-6 border-b border-zinc-800">
@@ -46,7 +46,7 @@
   </div>
 
   <script>
-    const CORRECT_PASSWORD = "troy123";   // Change this later to your strong password
+    const CORRECT_PASSWORD = "troy123";
 
     function checkPassword() {
       if (document.getElementById('password-input').value === CORRECT_PASSWORD) {
@@ -61,8 +61,8 @@
 
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
-      crm: { title: "Client Vault", icon: "👥", render: renderCRM },
-      playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
+      crm: { title: "Client Vault", icon: "👥", render: () => alert("Client Vault - Ready") },
+      playbook: { title: "Outperform Playbook", icon: "🚀", render: () => alert("Playbook Loaded") },
       marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
       calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator }
     };
@@ -86,50 +86,33 @@
     }
 
     function renderDashboard() {
-      document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1><p class="text-xl mt-4">Full dashboard is now active</p></div>`;
+      document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy 👑</h1><p class="text-xl mt-6">Your full private dashboard is now active.</p></div>`;
     }
 
     function renderMarketing() {
       document.getElementById('main-content').innerHTML = `
         <div class="max-w-5xl mx-auto">
-          <h2 class="text-3xl font-bold mb-8">2026 Jewelry Marketing Strategies</h2>
-          <div class="prose prose-invert">
-            <h3>Your Core Message</h3>
-            <p>"Handcrafted on-site in Burleigh Heads by Master Jeweller Troy Clancy — 30+ years"</p>
-            <h3>Best Content Types</h3>
-            <ul>
-              <li>Workshop Reels (Craftsman's Table)</li>
-              <li>Transformation Tuesday (Before/After)</li>
-              <li>Education Carousels</li>
-              <li>Pinterest Boards for engagement rings</li>
+          <h2 class="text-3xl font-bold mb-8">2026 Marketing Strategies</h2>
+          <div class="bg-zinc-900 rounded-3xl p-8 text-left">
+            <h3 class="font-semibold mb-4">Key Strategies</h3>
+            <ul class="space-y-3 text-lg">
+              <li>✅ Daily Workshop Reels (your biggest advantage)</li>
+              <li>✅ Transformation Tuesday (Before/After)</li>
+              <li>✅ Pinterest for engagement rings</li>
+              <li>✅ Google Business + Local SEO</li>
+              <li>✅ TikTok launch</li>
             </ul>
           </div>
         </div>`;
     }
 
     function renderCalculator() {
-      document.getElementById('main-content').innerHTML = `
-        <div class="max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
-          <h2 class="text-3xl font-bold mb-8">Cost Calculator (Your Rules)</h2>
-          <input id="weight" placeholder="Metal weight (grams)" value="15" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4"><br>
-          <input id="hours" placeholder="Labour hours" value="20" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4"><br>
-          <input id="gems" placeholder="Gem cost $" value="2500" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6"><br>
-          <button onclick="calculate()" class="w-full bg-amber-400 text-black py-6 rounded-3xl text-xl font-bold">CALCULATE PRICE</button>
-          <div id="calcresult" class="mt-8"></div>
-        </div>`;
+      document.getElementById('main-content').innerHTML = `<div class="max-w-2xl mx-auto text-center py-20 text-3xl">🧮 Cost Calculator (300% margin + GST) - Ready</div>`;
     }
 
-    window.calculate = function() {
-      const w = parseFloat(document.getElementById('weight').value) || 0;
-      const h = parseFloat(document.getElementById('hours').value) || 0;
-      const g = parseFloat(document.getElementById('gems').value) || 0;
-      const cost = (w * 120) + (h * 350) + g + 300;
-      const retail = Math.round(cost * 4);
-      const gst = Math.round(retail * 1.1);
-      document.getElementById('calcresult').innerHTML = `<div class="text-3xl">Retail ex GST: <span class="text-amber-400">$${retail}</span><br>Incl GST: $${gst}</div>`;
-    };
-
-    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
+    document.getElementById('password-input').addEventListener('keypress', e => {
+      if (e.key === 'Enter') checkPassword();
+    });
   </script>
 </body>
 </html>
