@@ -8,6 +8,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
+    .tab-btn.active { background-color: #fcd34d; color: #111827; font-weight: 600; }
   </style>
 </head>
 <body class="bg-zinc-950 text-white min-h-screen">
@@ -153,54 +154,113 @@
       });
     }
 
-    // MARKETING STRATEGIES - MONTHLY TABS
+    // MARKETING STRATEGIES - FULL 12 MONTHS WITH TABS
     function renderMarketing() {
       document.getElementById('main-content').innerHTML = `
         <div class="max-w-6xl mx-auto">
           <h2 class="text-4xl font-bold mb-8">Marketing Strategies</h2>
           <h3 class="text-2xl font-semibold mb-8">12-Month Marketing Calendar</h3>
           
-          <div class="flex flex-wrap gap-2 mb-8 border-b border-zinc-700 pb-2">
-            <button onclick="showMonth(0)" class="tab-btn active px-5 py-2 rounded-3xl text-sm font-medium">JAN</button>
-            <button onclick="showMonth(1)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">FEB</button>
-            <button onclick="showMonth(2)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">MAR</button>
-            <button onclick="showMonth(3)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">APR</button>
-            <button onclick="showMonth(4)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">MAY</button>
-            <button onclick="showMonth(5)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">JUN</button>
-            <button onclick="showMonth(6)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">JUL</button>
-            <button onclick="showMonth(7)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">AUG</button>
-            <button onclick="showMonth(8)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">SEP</button>
-            <button onclick="showMonth(9)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">OCT</button>
-            <button onclick="showMonth(10)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">NOV</button>
-            <button onclick="showMonth(11)" class="tab-btn px-5 py-2 rounded-3xl text-sm font-medium">DEC</button>
+          <div class="flex flex-wrap gap-2 mb-8 border-b border-zinc-700 pb-2 overflow-x-auto">
+            <button onclick="showMonth(0)" class="tab-btn active px-6 py-2 rounded-3xl text-sm font-medium">JAN</button>
+            <button onclick="showMonth(1)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">FEB</button>
+            <button onclick="showMonth(2)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">MAR</button>
+            <button onclick="showMonth(3)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">APR</button>
+            <button onclick="showMonth(4)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">MAY</button>
+            <button onclick="showMonth(5)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">JUN</button>
+            <button onclick="showMonth(6)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">JUL</button>
+            <button onclick="showMonth(7)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">AUG</button>
+            <button onclick="showMonth(8)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">SEP</button>
+            <button onclick="showMonth(9)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">OCT</button>
+            <button onclick="showMonth(10)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">NOV</button>
+            <button onclick="showMonth(11)" class="tab-btn px-6 py-2 rounded-3xl text-sm font-medium">DEC</button>
           </div>
 
           <div id="month-content" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
         </div>`;
-      
-      // Show January by default
-      showMonth(0);
+
+      showMonth(0); // Show January by default
     }
 
+    // Full calendar data - all months
     const calendarData = [
       // JAN
       [
-        { title: "Audit & optimise all social profiles", category: "content", budget: "$500", desc: "Complete overhaul of Instagram bio, highlights, profile aesthetic...", expected: "Professional, cohesive brand presence across all platforms", kpi: "Profile completion score 100% across all platforms" },
-        { title: "Launch 'The Craftsman's Table' behind-the-scenes Reels series", category: "content", budget: "$200", desc: "Weekly Reels series showing Troy at the bench - filing, setting stones, polishing...", expected: "Build authentic brand story, increase Reels reach by 300%", kpi: "10K+ Reels views within first month" }
+        { title: "Audit & optimise all social profiles", category: "content", budget: "$500", desc: "Complete overhaul of Instagram bio, highlights, profile aesthetic. Create consistent brand grid. Update Facebook page with services, hours, and call-to-action buttons. Optimise Google Business Profile with new photos and service descriptions.", expected: "Professional, cohesive brand presence across all platforms", kpi: "Profile completion score 100% across all platforms" },
+        { title: "Launch 'The Craftsman's Table' behind-the-scenes Reels series", category: "content", budget: "$200", desc: "Weekly Reels series showing Troy at the bench - filing, setting stones, polishing. Raw, authentic workshop footage with trending audio.", expected: "Build authentic brand story, increase Reels reach by 300%", kpi: "10K+ Reels views within first month" },
+        { title: "Implement content calendar: 5 posts/week", category: "content", budget: "$300", desc: "Mon: Behind-the-scenes Reel. Tue: Education carousel. Wed: Client story. Thu: Product showcase. Fri: Personal.", expected: "Consistent posting cadence exceeding all local competitors", kpi: "5 posts/week maintained consistently" },
+        { title: "SEO website overhaul", category: "seo", budget: "$2,000", desc: "Target keywords: custom engagement rings Gold Coast, jewellery repair Gold Coast, etc. Create dedicated landing pages.", expected: "Page 1 Google ranking for top 5 target keywords", kpi: "Organic traffic increase 50% in 3 months" }
       ],
-      // FEB (add more months as needed - full data is included in the actual file)
+      // FEB
       [
-        { title: "Launch Google Ads campaign for engagement ring seekers", category: "advertising", budget: "$1,500", desc: "Target keywords: custom engagement ring Gold Coast...", expected: "5-10 qualified engagement ring enquiries per month", kpi: "Cost per lead under $50" },
-        { title: "Valentine's Day campaign - 'Craft Your Love Story'", category: "content", budget: "$800", desc: "4-week countdown featuring real love stories from past clients...", expected: "15 Valentine's consultation bookings", kpi: "15 bookings, 500 new followers" }
+        { title: "Launch Google Ads campaign for engagement ring seekers", category: "advertising", budget: "$1,500", desc: "Target keywords: custom engagement ring Gold Coast, bespoke engagement ring QLD, handmade engagement ring near me.", expected: "5-10 qualified engagement ring enquiries per month", kpi: "Cost per lead under $50" },
+        { title: "Valentine's Day campaign - 'Craft Your Love Story'", category: "content", budget: "$800", desc: "4-week countdown featuring real love stories from past clients. Before/after restorations. Free design consultation.", expected: "15 Valentine's consultation bookings", kpi: "15 bookings, 500 new followers" },
+        { title: "Launch Instagram & Facebook paid ads - retargeting", category: "advertising", budget: "$900", desc: "Install Meta pixel. Create retargeting audiences. Run carousel ads with client testimonials.", expected: "Warm lead retargeting driving 20% more enquiries", kpi: "Website retargeting ROAS 3:1" },
+        { title: "Create 'Diamond Education' carousel series", category: "content", budget: "$100", desc: "Weekly educational carousels: 4Cs of diamonds, lab-grown vs natural, metal types, ring sizing guide, coloured gemstone guide.", expected: "Establish thought leadership", kpi: "Average 50+ saves per educational post" }
+      ],
+      // MAR
+      [
+        { title: "Google Reviews campaign", category: "seo", budget: "$0", desc: "Systematic collection program with follow-up emails, QR code, personal text from Troy.", expected: "50+ five-star Google reviews", kpi: "5 new reviews per month, 4.9+ average rating" },
+        { title: "Mother's Day campaign - 'Generations of Love'", category: "content", budget: "$1,000", desc: "Feature heirloom restoration stories. Special Mother's Day design package.", expected: "20 Mother's Day orders", kpi: "20 orders, 1000 new followers" },
+        { title: "Launch YouTube channel - 'From Sketch to Sparkle'", category: "content", budget: "$500", desc: "Monthly long-form video documenting a complete custom piece.", expected: "YouTube presence building long-form brand authority", kpi: "1000 YouTube views per video within 3 months" }
+      ],
+      // APR
+      [
+        { title: "Partner with Gold Coast wedding vendors", category: "partnerships", budget: "$500", desc: "Build relationships with top 10 wedding planners, photographers, venues.", expected: "Steady referral pipeline", kpi: "5 active referral partnerships, 3+ referrals/month" },
+        { title: "Launch 'Transformation Tuesday' series", category: "content", budget: "$100", desc: "Weekly before/after content showing dramatic jewellery restorations and repairs.", expected: "Own the repair/restoration conversation", kpi: "Average 100+ shares per Transformation Tuesday post" },
+        { title: "Sustainability & Ethics content pillar launch", category: "content", budget: "$200", desc: "Monthly content highlighting ethical practices.", expected: "Attract ethically-conscious buyers", kpi: "20% of enquiries mention ethics/sustainability" }
+      ],
+      // MAY
+      [
+        { title: "Local SEO blitz - dominate Google Maps", category: "seo", budget: "$300", desc: "Actively request Google reviews. Optimise Google Business Profile weekly.", expected: "Top 3 Google Maps placement", kpi: "50+ Google reviews, top 3 Maps placement" },
+        { title: "Host 'Design Your Dream Ring' in-studio event", category: "events", budget: "$800", desc: "Intimate evening event at Burleigh Heads studio for 15-20 couples.", expected: "10 consultation bookings", kpi: "20 attendees, 10 follow-up consultations" },
+        { title: "Engagement ring season push", category: "advertising", budget: "$2,000", desc: "Targeted campaign for winter proposals.", expected: "25 engagement ring enquiries", kpi: "25 qualified leads" }
+      ],
+      // JUN
+      [
+        { title: "Email marketing launch", category: "email", budget: "$100", desc: "Monthly 'Troy's Workshop Notes' newsletter.", expected: "500 email subscribers", kpi: "500 subscribers, 30% open rate" },
+        { title: "Launch TikTok account", category: "content", budget: "$200", desc: "Short-form workshop content. First-mover advantage.", expected: "First-mover advantage on TikTok", kpi: "1000 TikTok followers in first 2 months" },
+        { title: "EOFY tax-time campaign", category: "advertising", budget: "$600", desc: "'Invest in Timeless' campaign.", expected: "10 EOFY sales", kpi: "10 sales, ROAS 4:1" }
+      ],
+      // JUL
+      [
+        { title: "PR campaign - pitch Troy's story", category: "pr", budget: "$500", desc: "Pitch to Gold Coast media and wedding magazines.", expected: "3+ media features", kpi: "3 media features, 500+ referral traffic" },
+        { title: "Spring Engagement Season mega-campaign", category: "advertising", budget: "$3,000", desc: "Full-funnel campaign across all platforms.", expected: "30 engagement ring enquiries", kpi: "30 leads, 15 consultations, 8 sales" },
+        { title: "Pinterest strategy launch", category: "content", budget: "$100", desc: "Create Pinterest business account and boards.", expected: "New traffic source", kpi: "1000 monthly Pinterest impressions" }
+      ],
+      // AUG
+      [
+        { title: "Collaborate with Gold Coast influencers", category: "partnerships", budget: "$2,000", desc: "Partner with 3-5 micro-influencers.", expected: "Reach 50K+ new potential customers", kpi: "50K+ reach, 500 new followers" },
+        { title: "Father's Day campaign - men's custom jewellery", category: "content", budget: "$600", desc: "Showcase men's custom work: signet rings, cufflinks, etc.", expected: "15 Father's Day orders", kpi: "15 orders from campaign" }
+      ],
+      // SEP
+      [
+        { title: "Launch 'Heirloom Revival' dedicated landing page", category: "advertising", budget: "$1,000", desc: "Create dedicated page for jewellery restoration and run Google Ads.", expected: "Own the jewellery repair/restoration search market", kpi: "15 repair/restoration leads per month" }
+      ],
+      // OCT
+      [
+        { title: "Christmas campaign early launch - 'Crafted With Meaning'", category: "content", budget: "$1,500", desc: "Launch earlier than competitors. Theme: 'Give something that can't be bought off a shelf'.", expected: "Early market capture, 30 Christmas custom orders", kpi: "30 Christmas orders, 2000 new followers" }
+      ],
+      // NOV
+      [
+        { title: "Black Friday / Cyber Monday - 'Anti-Sale' campaign", category: "advertising", budget: "$800", desc: "Run 'Anti-Sale' messaging while competitors discount.", expected: "Brand differentiation", kpi: "15 premium enquiries" }
+      ],
+      // DEC
+      [
+        { title: "New Year campaign - 'New Year, New Sparkle'", category: "email", budget: "$100", desc: "Early bird engagement campaign.", expected: "Pipeline of January consultations", kpi: "15 January consultation bookings" },
+        { title: "Year-end review content - '12 Months of Masterpieces'", category: "content", budget: "$100", desc: "Showcase the best pieces created throughout the year.", expected: "High engagement year-end content", kpi: "Highest engagement post of the year" }
       ]
-      // ... all other months are included in the actual code you will paste
     ];
 
     function showMonth(index) {
       const container = document.getElementById('month-content');
       container.innerHTML = '';
-      const monthCards = calendarData[index] || [];
-      monthCards.forEach(card => {
+      const cards = calendarData[index] || [];
+      if (cards.length === 0) {
+        container.innerHTML = `<p class="text-zinc-400 text-center py-12">No actions for this month yet.</p>`;
+        return;
+      }
+      cards.forEach(card => {
         const div = document.createElement('div');
         div.className = 'bg-zinc-900 rounded-3xl p-8';
         div.innerHTML = `
