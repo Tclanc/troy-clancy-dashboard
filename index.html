@@ -2,29 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test - Troy Clancy JewelCraft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Troy Clancy Jewellery • JewelCraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    body { background:#111; color:white; font-family:Arial; text-align:center; padding:100px; }
-    input { padding:15px; width:280px; font-size:18px; margin:20px; }
-    button { padding:15px 40px; font-size:18px; background:#facc15; color:black; border:none; border-radius:50px; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
   </style>
 </head>
-<body>
-  <h1>💎 JewelCraft Test Page</h1>
-  <p><strong>Password is: troy123</strong></p>
-  
-  <input id="p" type="password" placeholder="type password here">
-  <br><br>
-  <button onclick="go()">UNLOCK</button>
+<body class="bg-zinc-950 text-white min-h-screen">
+
+  <!-- PASSWORD SCREEN -->
+  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
+    <div class="bg-zinc-900 rounded-3xl p-12 w-full max-w-md text-center">
+      <div class="text-5xl mb-6">💎</div>
+      <h1 class="text-3xl font-bold mb-2">JewelCraft Insights</h1>
+      <p class="text-amber-400 mb-8">Troy Clancy Jewellery • Private</p>
+      <input id="password-input" type="password" placeholder="Enter Password" class="w-full bg-zinc-800 text-center rounded-2xl p-5 text-lg mb-6">
+      <button onclick="checkPassword()" class="w-full bg-amber-400 text-zinc-950 font-semibold py-5 rounded-3xl text-lg">UNLOCK DASHBOARD</button>
+      <p id="error-msg" class="text-red-400 mt-4 text-sm hidden">Incorrect password</p>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div id="main-app" class="hidden flex h-screen">
+    <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+      <div class="p-6 border-b border-zinc-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-xl">💎</div>
+          <div><h1 class="text-2xl font-bold">JewelCraft</h1><p class="text-amber-400 text-sm">Troy Clancy</p></div>
+        </div>
+      </div>
+      <nav class="flex-1 p-4 space-y-1" id="nav"></nav>
+    </div>
+
+    <div class="flex-1 flex flex-col">
+      <header class="h-16 bg-zinc-900 border-b border-zinc-800 px-8 flex items-center justify-between">
+        <h2 id="page-title" class="text-2xl font-semibold">Dashboard</h2>
+      </header>
+      <div class="flex-1 overflow-auto p-8" id="main-content"></div>
+    </div>
+  </div>
 
   <script>
-    function go() {
-      if (document.getElementById('p').value === "troy123") {
-        alert("✅ SUCCESS! You are now logged in.\n\nWe can now add all features.");
+    const CORRECT_PASSWORD = "troy123";   // Change this later to your strong password
+
+    function checkPassword() {
+      if (document.getElementById('password-input').value === CORRECT_PASSWORD) {
+        document.getElementById('password-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        buildNav();
+        pages.dashboard.render();
       } else {
-        alert("❌ Wrong. Use: troy123");
+        document.getElementById('error-msg').classList.remove('hidden');
       }
     }
+
+    const pages = {
+      dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
+      crm: { title: "Client Vault", icon: "👥", render: renderCRM },
+      playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
+      marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
+      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator }
+    };
+
+    function buildNav() {
+      const nav = document.getElementById('nav');
+      nav.innerHTML = '';
+      Object.keys(pages).forEach(key => {
+        const p = pages[key];
+        const el = document.createElement('div');
+        el.className = `flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer hover:bg-zinc-800 ${key === 'dashboard' ? 'bg-zinc-800' : ''}`;
+        el.innerHTML = `<span class="text-xl">${p.icon}</span><span>${p.title}</span>`;
+        el.onclick = () => {
+          document.querySelectorAll('#nav > div').forEach(d => d.classList.remove('bg-zinc-800'));
+          el.classList.add('bg-zinc-800');
+          document.getElementById('page-title').textContent = p.title;
+          p.render();
+        };
+        nav.appendChild(el);
+      });
+    }
+
+    function renderDashboard() {
+      document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1><p class="text-xl mt-4">Full dashboard is now active</p></div>`;
+    }
+
+    function renderMarketing() {
+      document.getElementById('main-content').innerHTML = `
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-3xl font-bold mb-8">2026 Jewelry Marketing Strategies</h2>
+          <div class="prose prose-invert">
+            <h3>Your Core Message</h3>
+            <p>"Handcrafted on-site in Burleigh Heads by Master Jeweller Troy Clancy — 30+ years"</p>
+            <h3>Best Content Types</h3>
+            <ul>
+              <li>Workshop Reels (Craftsman's Table)</li>
+              <li>Transformation Tuesday (Before/After)</li>
+              <li>Education Carousels</li>
+              <li>Pinterest Boards for engagement rings</li>
+            </ul>
+          </div>
+        </div>`;
+    }
+
+    function renderCalculator() {
+      document.getElementById('main-content').innerHTML = `
+        <div class="max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+          <h2 class="text-3xl font-bold mb-8">Cost Calculator (Your Rules)</h2>
+          <input id="weight" placeholder="Metal weight (grams)" value="15" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4"><br>
+          <input id="hours" placeholder="Labour hours" value="20" class="w-full bg-zinc-800 p-4 rounded-2xl mb-4"><br>
+          <input id="gems" placeholder="Gem cost $" value="2500" class="w-full bg-zinc-800 p-4 rounded-2xl mb-6"><br>
+          <button onclick="calculate()" class="w-full bg-amber-400 text-black py-6 rounded-3xl text-xl font-bold">CALCULATE PRICE</button>
+          <div id="calcresult" class="mt-8"></div>
+        </div>`;
+    }
+
+    window.calculate = function() {
+      const w = parseFloat(document.getElementById('weight').value) || 0;
+      const h = parseFloat(document.getElementById('hours').value) || 0;
+      const g = parseFloat(document.getElementById('gems').value) || 0;
+      const cost = (w * 120) + (h * 350) + g + 300;
+      const retail = Math.round(cost * 4);
+      const gst = Math.round(retail * 1.1);
+      document.getElementById('calcresult').innerHTML = `<div class="text-3xl">Retail ex GST: <span class="text-amber-400">$${retail}</span><br>Incl GST: $${gst}</div>`;
+    };
+
+    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
   </script>
 </body>
 </html>
