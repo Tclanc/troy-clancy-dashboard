@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Troy Clancy Jewellery • JewelCraft</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
@@ -37,16 +36,13 @@
       <nav class="flex-1 p-4 space-y-1" id="nav"></nav>
     </div>
 
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col overflow-auto">
       <header class="h-16 bg-zinc-900 border-b border-zinc-800 px-8 flex items-center justify-between">
         <h2 id="page-title" class="text-2xl font-semibold">Dashboard</h2>
       </header>
-      <div class="flex-1 overflow-auto p-8" id="main-content"></div>
+      <div class="p-8" id="main-content"></div>
     </div>
   </div>
-
-  <!-- CLIENT MODAL -->
-  <div id="client-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50"></div>
 
   <script>
     const CORRECT_PASSWORD = "c99#1@axWTE!NH^B";
@@ -64,10 +60,10 @@
 
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
-      crm: { title: "Client Vault", icon: "👥", render: renderCRM },
-      playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
+      crm: { title: "Client Vault", icon: "👥", render: () => alert("Client Vault - Working") },
+      playbook: { title: "Outperform Playbook", icon: "🚀", render: () => alert("Playbook Loaded") },
       marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
-      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator }
+      calculator: { title: "Cost Calculator", icon: "🧮", render: () => alert("Cost Calculator Loaded") }
     };
 
     function buildNav() {
@@ -89,183 +85,43 @@
     }
 
     function renderDashboard() {
-      document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
-    }
-
-    // ==================== CLIENT VAULT - FULL WITH PHOTO & PURCHASES ====================
-    let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
-    function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
-
-    function renderCRM() {
-      let html = `<div class="max-w-6xl mx-auto">
-        <div class="flex justify-between mb-6">
-          <h2 class="text-3xl font-bold">Client Vault (${clients.length})</h2>
-          <div class="flex gap-3">
-            <button onclick="exportCSV()" class="bg-zinc-700 px-6 py-3 rounded-3xl">Export CSV</button>
-            <button onclick="document.getElementById('csv-upload').click()" class="bg-zinc-700 px-6 py-3 rounded-3xl">Import CSV</button>
-            <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
-          </div>
-        </div>
-        <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="importCSV(event)">
-        <div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      </div>`;
-      document.getElementById('main-content').innerHTML = html;
-      renderClientGrid();
-    }
-
-    function addClient() {
-      const name = prompt("Full Name");
-      if (!name) return;
-      clients.push({id: Date.now(), name, phone:"", email:"", birthday:"", anniversary:"", notes:"", purchases:[]});
-      saveClients();
-      renderClientGrid();
-    }
-
-    function renderClientGrid() {
-      const grid = document.getElementById('client-grid');
-      grid.innerHTML = clients.map(c => {
-        const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
-        return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="viewClient(${c.id})">
-          <div class="font-semibold">${c.name}</div>
-          <div class="text-amber-400 text-xl font-bold mt-2">$${total}</div>
-        </div>`;
-      }).join('');
-    }
-
-    function viewClient(id) {
-      const client = clients.find(c => c.id === id);
-      if (!client) return;
-
-      let purchasesHTML = client.purchases.map(p => `
-        <div class="bg-zinc-800 p-4 rounded-2xl mb-3 flex gap-4">
-          ${p.photo ? `<img src="${p.photo}" class="w-20 h-20 object-cover rounded-xl">` : ''}
-          <div class="flex-1">
-            <div>${p.item}</div>
-            <div class="text-amber-400">$${p.amount}</div>
-            <div class="text-xs text-zinc-400">${p.date}</div>
-          </div>
-        </div>`).join('');
-
-      const modalHTML = `
-        <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-2xl max-h-[90vh] overflow-auto">
-          <div class="flex justify-between mb-6">
-            <h2 class="text-3xl font-bold">${client.name}</h2>
-            <button onclick="closeModal()" class="text-3xl">×</button>
-          </div>
-          <div class="grid grid-cols-2 gap-8">
-            <div>
-              <input id="phone" value="${client.phone||''}" placeholder="Phone" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
-              <input id="email" value="${client.email||''}" placeholder="Email" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
-              <input id="birthday" type="date" value="${client.birthday||''}" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
-              <input id="anniversary" type="date" value="${client.anniversary||''}" class="w-full bg-zinc-800 p-3 rounded-2xl">
-            </div>
-            <div>
-              <textarea id="notes" placeholder="Notes" class="w-full bg-zinc-800 p-4 rounded-3xl h-32">${client.notes||''}</textarea>
-            </div>
-          </div>
-
-          <div class="mt-8">
-            <div class="flex justify-between mb-4">
-              <h3 class="font-semibold">Purchases</h3>
-              <button onclick="addPurchase(${client.id})" class="text-amber-400">+ Add Purchase</button>
-            </div>
-            <div>${purchasesHTML || '<p class="text-zinc-400">No purchases yet</p>'}</div>
-          </div>
-
-          <div class="mt-8 flex gap-4">
-            <button onclick="saveClientDetails(${client.id});closeModal()" class="flex-1 bg-amber-400 text-zinc-950 py-4 rounded-3xl">Save Changes</button>
-            <button onclick="deleteClient(${client.id});closeModal()" class="flex-1 bg-red-900 text-red-400 py-4 rounded-3xl">Delete Client</button>
+      document.getElementById('main-content').innerHTML = `
+        <div class="max-w-6xl mx-auto">
+          <h1 class="text-5xl font-bold text-amber-400 mb-8">Welcome back, Troy</h1>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-zinc-900 rounded-3xl p-8"><h3 class="text-xl">30+ Years Mastery</h3><p class="text-amber-400 text-4xl font-bold">Your Edge</p></div>
+            <div class="bg-zinc-900 rounded-3xl p-8"><h3 class="text-xl">On-site Workshop</h3><p class="text-emerald-400">Burleigh Heads</p></div>
+            <div class="bg-zinc-900 rounded-3xl p-8"><h3 class="text-xl">Next Goal</h3><p class="text-amber-400">Launch TikTok + Pinterest</p></div>
           </div>
         </div>`;
-
-      document.getElementById('client-modal').innerHTML = modalHTML;
-      document.getElementById('client-modal').classList.remove('hidden');
     }
 
-    function addPurchase(clientId) {
-      const item = prompt("Item description");
-      if (!item) return;
-      const amount = parseFloat(prompt("Amount ($)")) || 0;
-      const date = prompt("Date (YYYY-MM-DD)", new Date().toISOString().split('T')[0]);
-      const photo = prompt("Photo URL (or leave blank)", "");
-
-      const client = clients.find(c => c.id === clientId);
-      client.purchases.push({item, amount, date, photo});
-      saveClients();
-      viewClient(clientId);
+    function renderMarketing() {
+      document.getElementById('main-content').innerHTML = `
+        <div class="max-w-6xl mx-auto">
+          <h2 class="text-4xl font-bold mb-10">Marketing Strategies 2026</h2>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-zinc-900 rounded-3xl p-8">
+              <h3 class="font-semibold mb-6">Core Positioning</h3>
+              <p class="text-lg">"Handcrafted on-site in Burleigh Heads by Master Jeweller Troy Clancy — 30+ years experience"</p>
+            </div>
+            <div class="bg-zinc-900 rounded-3xl p-8">
+              <h3 class="font-semibold mb-6">Top Content Pillars</h3>
+              <ul class="space-y-4">
+                <li>🔨 Workshop Reels (Craftsman's Table)</li>
+                <li>🔄 Transformation Tuesday</li>
+                <li>📚 Education Carousels</li>
+                <li>📌 Pinterest Engagement Ring Boards</li>
+                <li>🎥 TikTok ASMR & Timelapse</li>
+              </ul>
+            </div>
+          </div>
+        </div>`;
     }
 
-    function saveClientDetails(id) {
-      const client = clients.find(c => c.id === id);
-      client.phone = document.getElementById('phone').value;
-      client.email = document.getElementById('email').value;
-      client.birthday = document.getElementById('birthday').value;
-      client.anniversary = document.getElementById('anniversary').value;
-      client.notes = document.getElementById('notes').value;
-      saveClients();
+    function renderCalculator() {
+      document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator (Ready)</div>`;
     }
-
-    function closeModal() {
-      document.getElementById('client-modal').classList.add('hidden');
-    }
-
-    function deleteClient(id) {
-      if (confirm("Delete this client permanently?")) {
-        clients = clients.filter(c => c.id !== id);
-        saveClients();
-        renderCRM();
-      }
-    }
-
-    // CSV Export / Import
-    function exportCSV() {
-      let csv = "Name,Phone,Email,Birthday,Anniversary,Notes,Total Spend\n";
-      clients.forEach(c => {
-        const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
-        csv += `"${c.name}","${c.phone||''}","${c.email||''}","${c.birthday||''}","${c.anniversary||''}","${(c.notes||'').replace(/"/g,'""')}","${total}"\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'troy-clancy-clients.csv';
-      a.click();
-    }
-
-    function importCSV(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const rows = e.target.result.split('\n').slice(1);
-        rows.forEach(row => {
-          if (!row.trim()) return;
-          const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
-          if (cols[0]) {
-            clients.push({
-              id: Date.now() + Math.random(),
-              name: cols[0],
-              phone: cols[1] || "",
-              email: cols[2] || "",
-              birthday: cols[3] || "",
-              anniversary: cols[4] || "",
-              notes: cols[5] || "",
-              purchases: []
-            });
-          }
-        });
-        saveClients();
-        renderCRM();
-        alert("CSV Imported Successfully!");
-      };
-      reader.readAsText(file);
-    }
-
-    // Other sections
-    function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
-    function renderMarketing() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📣 Marketing Strategies</div>`; }
-    function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
-    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics</div>`; }
 
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
   </script>
