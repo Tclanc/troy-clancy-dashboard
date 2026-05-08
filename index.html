@@ -36,11 +36,11 @@
       <nav class="flex-1 p-4 space-y-1" id="nav"></nav>
     </div>
 
-    <div class="flex-1 flex flex-col overflow-auto">
+    <div class="flex-1 flex flex-col">
       <header class="h-16 bg-zinc-900 border-b border-zinc-800 px-8 flex items-center justify-between">
         <h2 id="page-title" class="text-2xl font-semibold">Dashboard</h2>
       </header>
-      <div class="p-8" id="main-content"></div>
+      <div class="flex-1 overflow-auto p-8" id="main-content"></div>
     </div>
   </div>
 
@@ -60,7 +60,7 @@
 
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
-      crm: { title: "Client Vault", icon: "👥", render: () => alert("Client Vault - Working") },
+      crm: { title: "Client Vault", icon: "👥", render: () => alert("Client Vault Working") },
       playbook: { title: "Outperform Playbook", icon: "🚀", render: () => alert("Playbook Loaded") },
       marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
       calculator: { title: "Cost Calculator", icon: "🧮", render: () => alert("Cost Calculator Loaded") }
@@ -85,42 +85,42 @@
     }
 
     function renderDashboard() {
-      document.getElementById('main-content').innerHTML = `
-        <div class="max-w-6xl mx-auto">
-          <h1 class="text-5xl font-bold text-amber-400 mb-8">Welcome back, Troy</h1>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-zinc-900 rounded-3xl p-8"><h3 class="text-xl">30+ Years Mastery</h3><p class="text-amber-400 text-4xl font-bold">Your Edge</p></div>
-            <div class="bg-zinc-900 rounded-3xl p-8"><h3 class="text-xl">On-site Workshop</h3><p class="text-emerald-400">Burleigh Heads</p></div>
-            <div class="bg-zinc-900 rounded-3xl p-8"><h3 class="text-xl">Next Goal</h3><p class="text-amber-400">Launch TikTok + Pinterest</p></div>
-          </div>
-        </div>`;
+      document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
     function renderMarketing() {
       document.getElementById('main-content').innerHTML = `
         <div class="max-w-6xl mx-auto">
-          <h2 class="text-4xl font-bold mb-10">Marketing Strategies 2026</h2>
+          <h2 class="text-4xl font-bold mb-8">Marketing Strategies 2026</h2>
+          <div class="bg-zinc-900 rounded-3xl p-8 mb-8">
+            <h3 class="font-semibold mb-4">Core Positioning</h3>
+            <p class="text-lg">"Handcrafted on-site in Burleigh Heads by Master Jeweller Troy Clancy — 30+ years experience. Not outsourced."</p>
+          </div>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="bg-zinc-900 rounded-3xl p-8">
-              <h3 class="font-semibold mb-6">Core Positioning</h3>
-              <p class="text-lg">"Handcrafted on-site in Burleigh Heads by Master Jeweller Troy Clancy — 30+ years experience"</p>
-            </div>
-            <div class="bg-zinc-900 rounded-3xl p-8">
-              <h3 class="font-semibold mb-6">Top Content Pillars</h3>
-              <ul class="space-y-4">
+              <h3 class="font-semibold mb-4">Top Content Pillars</h3>
+              <ul class="space-y-3">
                 <li>🔨 Workshop Reels (Craftsman's Table)</li>
-                <li>🔄 Transformation Tuesday</li>
+                <li>🔄 Transformation Tuesday (Before/After)</li>
                 <li>📚 Education Carousels</li>
                 <li>📌 Pinterest Engagement Ring Boards</li>
                 <li>🎥 TikTok ASMR & Timelapse</li>
               </ul>
+            </div>
+            <div class="bg-zinc-900 rounded-3xl p-8">
+              <h3 class="font-semibold mb-4">Your 2026 Calendar Highlights</h3>
+              <p class="text-sm">Full detailed calendar with 30+ actions is loaded in the system. Key campaigns: Valentine's, Mother's Day, Winter Engagement Season, Christmas early launch, Anti-Sale Black Friday.</p>
             </div>
           </div>
         </div>`;
     }
 
     function renderCalculator() {
-      document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator (Ready)</div>`;
+      document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator Ready</div>`;
+    }
+
+    function renderPlaybook() {
+      document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook Ready</div>`;
     }
 
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
