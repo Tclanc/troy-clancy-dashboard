@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Troy Clancy Jewellery • JewelCraft</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
@@ -64,11 +63,7 @@
 
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
-      crm: { title: "Client Vault", icon: "👥", render: renderCRM },
-      playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
-      marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
-      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator },
-      analytics: { title: "Analytics", icon: "📈", render: renderAnalytics }
+      crm: { title: "Client Vault", icon: "👥", render: renderCRM }
     };
 
     function buildNav() {
@@ -93,16 +88,21 @@
       document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    // ==================== 1. CLIENT VAULT - FULL CRM ====================
+    // ==================== CLIENT VAULT - FULL CRM WITH CSV ====================
     let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
     function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
 
     function renderCRM() {
       let html = `<div class="max-w-6xl mx-auto">
         <div class="flex justify-between mb-6">
-          <input id="client-search" placeholder="Search clients..." class="bg-zinc-800 p-4 rounded-3xl w-96" onkeyup="filterClients(this.value)">
-          <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
+          <h2 class="text-3xl font-bold">Client Vault (${clients.length} clients)</h2>
+          <div class="flex gap-3">
+            <button onclick="exportCSV()" class="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-3xl">Export CSV</button>
+            <button onclick="document.getElementById('csv-upload').click()" class="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-3xl">Import CSV</button>
+            <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
+          </div>
         </div>
+        <input type="file" id="csv-upload" accept=".csv" class="hidden" onchange="importCSV(event)">
         <div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>`;
       document.getElementById('main-content').innerHTML = html;
@@ -117,9 +117,9 @@
       renderClientGrid();
     }
 
-    function renderClientGrid(filteredClients = clients) {
+    function renderClientGrid() {
       const grid = document.getElementById('client-grid');
-      grid.innerHTML = filteredClients.map(c => {
+      grid.innerHTML = clients.map(c => {
         const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
         return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="viewClient(${c.id})">
           <div class="font-semibold">${c.name}</div>
@@ -127,11 +127,6 @@
         </div>`;
       }).join('');
     }
-
-    window.filterClients = function(query) {
-      const filtered = clients.filter(c => c.name.toLowerCase().includes(query.toLowerCase()));
-      renderClientGrid(filtered);
-    };
 
     function viewClient(id) {
       const client = clients.find(c => c.id === id);
@@ -218,12 +213,56 @@
       }
     }
 
-    // Other sections (short for now)
+    // CSV Export
+    function exportCSV() {
+      let csv = "Name,Phone,Email,Birthday,Anniversary,Notes,Total Spend\n";
+      clients.forEach(c => {
+        const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
+        csv += `"${c.name}","${c.phone||''}","${c.email||''}","${c.birthday||''}","${c.anniversary||''}","${(c.notes||'').replace(/"/g, '""')}","${total}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'troy-clancy-clients.csv';
+      a.click();
+    }
+
+    // CSV Import
+    function importCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const rows = text.split('\n').slice(1);
+        rows.forEach(row => {
+          if (!row.trim()) return;
+          const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
+          if (cols[0]) {
+            clients.push({
+              id: Date.now() + Math.random(),
+              name: cols[0],
+              phone: cols[1] || "",
+              email: cols[2] || "",
+              birthday: cols[3] || "",
+              anniversary: cols[4] || "",
+              notes: cols[5] || "",
+              purchases: []
+            });
+          }
+        });
+        saveClients();
+        renderCRM();
+        alert("CSV imported successfully!");
+      };
+      reader.readAsText(file);
+    }
+
+    // Other pages
     function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
     function renderMarketing() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📣 Marketing Strategies</div>`; }
     function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
-    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics</div>`; }
-    function renderContentLogger() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📝 Content Logger</div>`; }
 
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
   </script>
