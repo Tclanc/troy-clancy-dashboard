@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test - Troy Clancy JewelCraft</title>
+  <style>
+    body { background:#111; color:white; font-family:Arial; text-align:center; padding:100px; }
+    input { padding:15px; width:280px; font-size:18px; margin:20px; }
+    button { padding:15px 40px; font-size:18px; background:#facc15; color:black; border:none; border-radius:50px; }
+  </style>
+</head>
+<body>
+  <h1>💎 JewelCraft Test Page</h1>
+  <p><strong>Password is: troy123</strong></p>
+  
+  <input id="p" type="password" placeholder="type password here">
+  <br><br>
+  <button onclick="go()">UNLOCK</button>
+
+  <script>
+    function go() {
+      if (document.getElementById('p').value === "troy123") {
+        alert("✅ SUCCESS! You are now logged in.\n\nWe can now add all features.");
+      } else {
+        alert("❌ Wrong. Use: troy123");
+      }
+    }
+  </script>
+</body>
+</html>
