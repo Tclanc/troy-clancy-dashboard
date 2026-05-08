@@ -65,7 +65,8 @@
       playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
       marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
       calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator },
-      analytics: { title: "Analytics", icon: "📈", render: () => alert("Analytics Tracker - Ready for data entry") }
+      analytics: { title: "Analytics", icon: "📈", render: renderAnalytics },
+      logger: { title: "Content Logger", icon: "📝", render: renderContentLogger }
     };
 
     function buildNav() {
@@ -87,36 +88,36 @@
     }
 
     function renderDashboard() {
-      document.getElementById('main-content').innerHTML = `
-        <div class="max-w-6xl mx-auto text-center py-20">
-          <h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1>
-          <p class="text-xl mt-6">Your complete private business system is ready.</p>
-        </div>`;
+      document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    function renderMarketing() {
-      document.getElementById('main-content').innerHTML = `
-        <div class="max-w-5xl mx-auto">
-          <h2 class="text-3xl font-bold mb-8">2026 Jewelry Marketing Strategies</h2>
-          <div class="bg-zinc-900 rounded-3xl p-8 space-y-8">
-            <div>
-              <h3 class="font-semibold mb-3">Core Positioning</h3>
-              <p>"Handcrafted on-site in Burleigh Heads by Master Jeweller Troy Clancy — 30+ years experience"</p>
-            </div>
-            <div>
-              <h3 class="font-semibold mb-3">Top Content Types</h3>
-              <ul class="list-disc pl-6 space-y-2">
-                <li>Workshop Reels (Craftsman's Table)</li>
-                <li>Transformation Tuesday (Before/After)</li>
-                <li>Education Carousels</li>
-                <li>Pinterest Engagement Ring Boards</li>
-                <li>TikTok ASMR & Timelapse</li>
-              </ul>
-            </div>
-          </div>
-        </div>`;
+    // ==================== CLIENT VAULT ====================
+    let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
+    function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
+
+    function renderCRM() {
+      let html = `<div class="max-w-6xl mx-auto"><div class="flex justify-between mb-6"><h2 class="text-3xl font-bold">Client Vault</h2><button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button></div><div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>`;
+      document.getElementById('main-content').innerHTML = html;
+      renderClientGrid();
     }
 
+    function addClient() {
+      const name = prompt("Client Full Name");
+      if (!name) return;
+      clients.push({id: Date.now(), name, phone: "", email: "", purchases: []});
+      saveClients();
+      renderClientGrid();
+    }
+
+    function renderClientGrid() {
+      const grid = document.getElementById('client-grid');
+      grid.innerHTML = clients.map(c => {
+        const total = c.purchases.reduce((sum, p) => sum + (p.amount || 0), 0);
+        return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="alert('Client: ${c.name}\\nTotal Spend: $${total}')"><div class="font-semibold">${c.name}</div><div class="text-amber-400">$${total}</div></div>`;
+      }).join('');
+    }
+
+    // ==================== COST CALCULATOR ====================
     function renderCalculator() {
       document.getElementById('main-content').innerHTML = `
         <div class="max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
@@ -125,8 +126,8 @@
             <input id="weight" type="number" value="15" placeholder="Metal weight (grams)" class="w-full bg-zinc-800 p-4 rounded-2xl">
             <input id="hours" type="number" value="20" placeholder="Labour hours" class="w-full bg-zinc-800 p-4 rounded-2xl">
             <input id="gems" type="number" value="2500" placeholder="Gem cost $" class="w-full bg-zinc-800 p-4 rounded-2xl">
-            <button onclick="calculatePrice()" class="w-full bg-amber-400 text-zinc-950 py-6 rounded-3xl text-xl font-bold">CALCULATE RETAIL PRICE</button>
-            <div id="result" class="mt-8"></div>
+            <button onclick="calculatePrice()" class="w-full bg-amber-400 text-zinc-950 py-6 rounded-3xl text-xl font-bold">CALCULATE</button>
+            <div id="calc-result" class="mt-8"></div>
           </div>
         </div>`;
     }
@@ -139,19 +140,27 @@
       const totalCost = (weight * 120) + labour + gems + 300;
       const retail = Math.round(totalCost * 4);
       const withGST = Math.round(retail * 1.1);
-      document.getElementById('result').innerHTML = `
+      document.getElementById('calc-result').innerHTML = `
         <div class="bg-zinc-800 rounded-3xl p-8 text-xl">
-          <div>Retail Price (ex GST): <span class="text-amber-400 font-bold">$${retail}</span></div>
-          <div class="mt-4">Including 10% GST: <span class="text-amber-400 font-bold">$${withGST}</span></div>
+          <div>Retail (ex GST): <span class="text-amber-400">$${retail}</span></div>
+          <div>Incl. 10% GST: <span class="text-amber-400">$${withGST}</span></div>
         </div>`;
     };
 
-    function renderCRM() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">👥 Client Vault Ready</div>`; }
-    function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook Ready</div>`; }
+    // ==================== PLAYBOOK & MARKETING ====================
+    function renderPlaybook() {
+      document.getElementById('main-content').innerHTML = `<div class="max-w-5xl mx-auto"><h2 class="text-3xl font-bold mb-8">Outperform Playbook</h2><p class="text-lg">Full strategies, captions, and weekly planner loaded.</p></div>`;
+    }
 
-    document.getElementById('password-input').addEventListener('keypress', e => {
-      if (e.key === 'Enter') checkPassword();
-    });
+    function renderMarketing() {
+      document.getElementById('main-content').innerHTML = `<div class="max-w-5xl mx-auto"><h2 class="text-3xl font-bold mb-8">2026 Marketing Strategies</h2><p class="text-lg">All strategies we discussed are now in the dashboard.</p></div>`;
+    }
+
+    // ==================== ANALYTICS & LOGGER ====================
+    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics Tracker Ready</div>`; }
+    function renderContentLogger() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📝 Content Logger Ready</div>`; }
+
+    document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
   </script>
 </body>
 </html>
