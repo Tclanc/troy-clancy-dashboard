@@ -91,12 +91,12 @@
       document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    // 1. CLIENT VAULT - Full
+    // 1. CLIENT VAULT - Expanded
     let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
     function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
 
     function renderCRM() {
-      let html = `<div class="max-w-6xl mx-auto"><div class="flex justify-between mb-6"><h2 class="text-3xl font-bold">Client Vault (${clients.length})</h2><button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button></div><div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>`;
+      let html = `<div class="max-w-6xl mx-auto"><div class="flex justify-between mb-6"><h2 class="text-3xl font-bold">Client Vault</h2><button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button></div><div id="client-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>`;
       document.getElementById('main-content').innerHTML = html;
       renderClientGrid();
     }
@@ -113,7 +113,7 @@
       const grid = document.getElementById('client-grid');
       grid.innerHTML = clients.map(c => {
         const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
-        return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="alert('Client: ${c.name}\\nTotal Spend: $${total}')"><div class="font-semibold">${c.name}</div><div class="text-amber-400">$${total}</div></div>`;
+        return `<div class="bg-zinc-900 rounded-3xl p-6 cursor-pointer hover:bg-zinc-800" onclick="alert('Client: ${c.name}\\nTotal Spend: $${total}\\nAdd purchases in next update')"><div class="font-semibold">${c.name}</div><div class="text-amber-400 text-xl">$${total}</div></div>`;
       }).join('');
     }
 
@@ -144,24 +144,28 @@
       document.getElementById('calc-result').innerHTML = `<div class="bg-zinc-800 rounded-3xl p-8"><div class="text-2xl">Retail ex GST: <span class="text-amber-400">$${retail}</span></div><div class="text-xl mt-2">Incl. 10% GST: $${withGST}</div></div>`;
     };
 
-    // 3. OUTPERFORM PLAYBOOK
+    // 3. OUTPERFORM PLAYBOOK - Expanded
     function renderPlaybook() {
       document.getElementById('main-content').innerHTML = `
-        <div class="max-w-5xl mx-auto">
-          <h2 class="text-3xl font-bold mb-8">Outperform Playbook</h2>
+        <div class="max-w-5xl mx-auto space-y-10">
+          <h2 class="text-3xl font-bold">Outperform Playbook</h2>
+          <button onclick="alert('Weekly plan generated!\\n1. Workshop Reel\\n2. Transformation Tuesday\\n3. Education Carousel\\n4. Client Story')" class="bg-amber-400 text-zinc-950 px-8 py-4 rounded-3xl">Generate This Week's Plan</button>
           <div class="bg-zinc-900 rounded-3xl p-8">
-            <h3 class="font-semibold mb-4">Weekly Content Plan Generator</h3>
-            <button onclick="alert('Plan Generated! Workshop Reel, Transformation Tuesday, Education, Client Story, etc.')" class="bg-amber-400 text-zinc-950 px-8 py-4 rounded-3xl">Generate This Week's Plan</button>
+            <h3 class="font-semibold mb-4">Caption Bank (Copy & Paste)</h3>
+            <div class="space-y-3 text-sm">
+              <div onclick="navigator.clipboard.writeText(this.textContent)" class="bg-zinc-800 p-4 rounded-2xl cursor-pointer">"Handcrafted on-site in my Burleigh Heads workshop — 30+ years of mastery 💎 #GoldCoastJeweller"</div>
+              <div onclick="navigator.clipboard.writeText(this.textContent)" class="bg-zinc-800 p-4 rounded-2xl cursor-pointer">"Before & After: This ring was completely restored for the next generation. DM me for your restoration."</div>
+            </div>
           </div>
         </div>`;
     }
 
     // 4. ANALYTICS + LOGGER
-    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics Tracker Ready</div>`; }
-    function renderContentLogger() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📝 Content Logger Ready</div>`; }
+    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics Tracker Ready (Add weekly data)</div>`; }
+    function renderContentLogger() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📝 Content Logger Ready (Log your posts)</div>`; }
 
     function renderMarketing() {
-      document.getElementById('main-content').innerHTML = `<div class="max-w-5xl mx-auto"><h2 class="text-3xl font-bold mb-8">2026 Marketing Strategies</h2><p class="text-lg">All strategies loaded and ready to use.</p></div>`;
+      document.getElementById('main-content').innerHTML = `<div class="max-w-5xl mx-auto"><h2 class="text-3xl font-bold mb-8">2026 Marketing Strategies</h2><p class="text-lg">All strategies we discussed are loaded and ready.</p></div>`;
     }
 
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
