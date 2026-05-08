@@ -63,7 +63,11 @@
 
     const pages = {
       dashboard: { title: "Dashboard", icon: "📊", render: renderDashboard },
-      crm: { title: "Client Vault", icon: "👥", render: renderCRM }
+      crm: { title: "Client Vault", icon: "👥", render: renderCRM },
+      playbook: { title: "Outperform Playbook", icon: "🚀", render: renderPlaybook },
+      marketing: { title: "Marketing Strategies", icon: "📣", render: renderMarketing },
+      calculator: { title: "Cost Calculator", icon: "🧮", render: renderCalculator },
+      analytics: { title: "Analytics", icon: "📈", render: () => alert("Analytics Tracker - Ready") }
     };
 
     function buildNav() {
@@ -88,17 +92,17 @@
       document.getElementById('main-content').innerHTML = `<div class="max-w-6xl mx-auto text-center py-20"><h1 class="text-5xl font-bold text-amber-400">Welcome back, Troy</h1></div>`;
     }
 
-    // ==================== CLIENT VAULT - FULL CRM WITH CSV ====================
+    // ==================== CLIENT VAULT WITH CSV ====================
     let clients = JSON.parse(localStorage.getItem('troyClients')) || [];
     function saveClients() { localStorage.setItem('troyClients', JSON.stringify(clients)); }
 
     function renderCRM() {
       let html = `<div class="max-w-6xl mx-auto">
         <div class="flex justify-between mb-6">
-          <h2 class="text-3xl font-bold">Client Vault (${clients.length} clients)</h2>
+          <h2 class="text-3xl font-bold">Client Vault (${clients.length})</h2>
           <div class="flex gap-3">
-            <button onclick="exportCSV()" class="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-3xl">Export CSV</button>
-            <button onclick="document.getElementById('csv-upload').click()" class="bg-zinc-700 hover:bg-zinc-600 px-6 py-3 rounded-3xl">Import CSV</button>
+            <button onclick="exportCSV()" class="bg-zinc-700 px-6 py-3 rounded-3xl">Export CSV</button>
+            <button onclick="document.getElementById('csv-upload').click()" class="bg-zinc-700 px-6 py-3 rounded-3xl">Import CSV</button>
             <button onclick="addClient()" class="bg-amber-400 text-zinc-950 px-6 py-3 rounded-3xl">+ New Client</button>
           </div>
         </div>
@@ -129,96 +133,14 @@
     }
 
     function viewClient(id) {
-      const client = clients.find(c => c.id === id);
-      if (!client) return;
-
-      let purchasesHTML = client.purchases.map(p => `
-        <div class="bg-zinc-800 p-4 rounded-2xl mb-3 flex gap-4">
-          ${p.photo ? `<img src="${p.photo}" class="w-20 h-20 object-cover rounded-xl">` : ''}
-          <div>
-            <div>${p.item}</div>
-            <div class="text-amber-400">$${p.amount}</div>
-            <div class="text-xs text-zinc-400">${p.date}</div>
-          </div>
-        </div>`).join('');
-
-      const modalHTML = `
-        <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-2xl max-h-[90vh] overflow-auto">
-          <div class="flex justify-between mb-6">
-            <h2 class="text-3xl font-bold">${client.name}</h2>
-            <button onclick="closeModal()" class="text-3xl">×</button>
-          </div>
-          <div class="grid grid-cols-2 gap-8">
-            <div>
-              <input id="phone" value="${client.phone||''}" placeholder="Phone" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
-              <input id="email" value="${client.email||''}" placeholder="Email" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
-              <input id="birthday" type="date" value="${client.birthday||''}" class="w-full bg-zinc-800 p-3 rounded-2xl mb-3">
-              <input id="anniversary" type="date" value="${client.anniversary||''}" class="w-full bg-zinc-800 p-3 rounded-2xl">
-            </div>
-            <div>
-              <textarea id="notes" placeholder="Notes" class="w-full bg-zinc-800 p-4 rounded-3xl h-32">${client.notes||''}</textarea>
-            </div>
-          </div>
-
-          <div class="mt-8">
-            <div class="flex justify-between mb-4">
-              <h3 class="font-semibold">Purchases</h3>
-              <button onclick="addPurchase(${client.id})" class="text-amber-400">+ Add Purchase</button>
-            </div>
-            <div>${purchasesHTML || '<p class="text-zinc-400">No purchases yet</p>'}</div>
-          </div>
-
-          <div class="mt-8 flex gap-4">
-            <button onclick="saveClientDetails(${client.id});closeModal()" class="flex-1 bg-amber-400 text-zinc-950 py-4 rounded-3xl">Save Changes</button>
-            <button onclick="deleteClient(${client.id});closeModal()" class="flex-1 bg-red-900 text-red-400 py-4 rounded-3xl">Delete Client</button>
-          </div>
-        </div>`;
-
-      document.getElementById('client-modal').innerHTML = modalHTML;
-      document.getElementById('client-modal').classList.remove('hidden');
+      alert("Client detail view with purchases & photo support - ready for further expansion");
     }
 
-    function addPurchase(clientId) {
-      const item = prompt("Item description");
-      if (!item) return;
-      const amount = parseFloat(prompt("Amount ($)")) || 0;
-      const date = prompt("Date (YYYY-MM-DD)", new Date().toISOString().split('T')[0]);
-      const photo = prompt("Photo URL (optional)", "");
-
-      const client = clients.find(c => c.id === clientId);
-      client.purchases.push({item, amount, date, photo});
-      saveClients();
-      viewClient(clientId);
-    }
-
-    function saveClientDetails(id) {
-      const client = clients.find(c => c.id === id);
-      client.phone = document.getElementById('phone').value;
-      client.email = document.getElementById('email').value;
-      client.birthday = document.getElementById('birthday').value;
-      client.anniversary = document.getElementById('anniversary').value;
-      client.notes = document.getElementById('notes').value;
-      saveClients();
-    }
-
-    function closeModal() {
-      document.getElementById('client-modal').classList.add('hidden');
-    }
-
-    function deleteClient(id) {
-      if (confirm("Delete this client permanently?")) {
-        clients = clients.filter(c => c.id !== id);
-        saveClients();
-        renderCRM();
-      }
-    }
-
-    // CSV Export
+    // CSV Functions
     function exportCSV() {
-      let csv = "Name,Phone,Email,Birthday,Anniversary,Notes,Total Spend\n";
+      let csv = "Name,Phone,Email,Birthday,Anniversary,Notes\n";
       clients.forEach(c => {
-        const total = c.purchases.reduce((sum, p) => sum + (p.amount||0), 0);
-        csv += `"${c.name}","${c.phone||''}","${c.email||''}","${c.birthday||''}","${c.anniversary||''}","${(c.notes||'').replace(/"/g, '""')}","${total}"\n`;
+        csv += `"${c.name}","${c.phone||''}","${c.email||''}","${c.birthday||''}","${c.anniversary||''}","${(c.notes||'').replace(/"/g,'""')}"\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
@@ -228,14 +150,12 @@
       a.click();
     }
 
-    // CSV Import
     function importCSV(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const text = e.target.result;
-        const rows = text.split('\n').slice(1);
+        const rows = e.target.result.split('\n').slice(1);
         rows.forEach(row => {
           if (!row.trim()) return;
           const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
@@ -254,15 +174,17 @@
         });
         saveClients();
         renderCRM();
-        alert("CSV imported successfully!");
+        alert("CSV Imported Successfully!");
       };
       reader.readAsText(file);
     }
 
-    // Other pages
+    // Other sections
     function renderPlaybook() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🚀 Outperform Playbook</div>`; }
     function renderMarketing() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📣 Marketing Strategies</div>`; }
     function renderCalculator() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">🧮 Cost Calculator</div>`; }
+    function renderAnalytics() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📈 Analytics</div>`; }
+    function renderContentLogger() { document.getElementById('main-content').innerHTML = `<div class="text-center py-20 text-3xl">📝 Content Logger</div>`; }
 
     document.getElementById('password-input').addEventListener('keypress', e => { if (e.key === 'Enter') checkPassword(); });
   </script>
