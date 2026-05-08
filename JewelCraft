@@ -4,48 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Troy Clancy Jewellery • JewelCraft</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    body { font-family: 'Inter', system-ui, sans-serif; }
+    body { font-family: Arial, sans-serif; background: #111; color: white; text-align: center; padding: 100px; }
+    input { padding: 15px; font-size: 18px; width: 300px; margin: 20px; }
+    button { padding: 15px 30px; font-size: 18px; background: gold; color: black; border: none; border-radius: 50px; }
   </style>
 </head>
-<body class="bg-zinc-950 text-white min-h-screen">
-
-  <!-- PASSWORD SCREEN -->
-  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
-    <div class="bg-zinc-900 rounded-3xl p-12 w-full max-w-md text-center">
-      <div class="text-6xl mb-6">💎</div>
-      <h1 class="text-3xl font-bold mb-2">JewelCraft Insights</h1>
-      <p class="text-amber-400 mb-8">Troy Clancy Jewellery • Private</p>
-      
-      <input id="password-input" type="password" placeholder="Enter Password" 
-             class="w-full bg-zinc-800 text-center rounded-2xl p-5 text-lg mb-6">
-      
-      <button onclick="checkPassword()" 
-              class="w-full bg-amber-400 text-zinc-950 font-semibold py-5 rounded-3xl text-lg">
-        UNLOCK DASHBOARD
-      </button>
-      <p id="error-msg" class="text-red-400 mt-4 text-sm hidden">Incorrect password. Try again.</p>
-    </div>
-  </div>
+<body>
+  <h1>💎 JewelCraft Test</h1>
+  <p>Password: troy123</p>
+  
+  <input id="pass" type="password" placeholder="Enter password">
+  <br><br>
+  <button onclick="check()">UNLOCK</button>
 
   <script>
-    const CORRECT_PASSWORD = "troy123";
-
-    function checkPassword() {
-      if (document.getElementById('password-input').value === CORRECT_PASSWORD) {
-        alert("✅ Login Successful!\n\nWelcome to your full dashboard.");
-        window.location.reload(); // This will show the real dashboard in next version
+    function check() {
+      if (document.getElementById('pass').value === "troy123") {
+        alert("✅ SUCCESS! Password is working.\n\nYou can now use the full dashboard.");
       } else {
-        document.getElementById('error-msg').classList.remove('hidden');
+        alert("❌ Wrong password. Use: troy123");
       }
     }
-
-    // Enter key support
-    document.getElementById('password-input').addEventListener('keypress', function(e) {
-      if (e.key === "Enter") checkPassword();
-    });
   </script>
 </body>
 </html>
